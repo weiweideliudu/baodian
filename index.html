@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>体彩店业绩管理系统</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  padding: 16px;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  padding: 14px 24px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-btn {
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  font-size: 14px;
+  color: #606266;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-btn:hover {
+  background: #f3f4f6;
+  color: #1890ff;
+}
+
+.nav-btn.active {
+  background: #1890ff;
+  color: #ffffff;
+}
+
+.page {
+  display: none;
+  padding: 24px;
+}
+
+.page.active {
+  display: block;
+}
+
+.card {
+  background: #fafbfc;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 14px;
+  padding-left: 10px;
+  border-left: 4px solid #1890ff;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 18px;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-item label {
+  font-size: 13px;
+  color: #55585c;
+}
+
+.form-item input,
+.form-item select {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-item input:focus,
+.form-item select:focus {
+  border-color: #1890ff;
+}
+
+.form-item input[readonly] {
+  background: #f0f7ff;
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.date-bar {
+  margin-bottom: 18px;
+}
+
+.date-bar .form-item {
+  max-width: 200px;
+}
+
+.btn-bar {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.btn {
+  height: 38px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary {
+  background: #1890ff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #40a9ff;
+}
+
+.btn-success {
+  background: #52c41a;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background: #73d13d;
+}
+
+.btn-danger {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #ff7875;
+}
+
+.btn-default {
+  background: #fff;
+  color: #333;
+  border: 1px solid #d9d9d9;
+}
+
+.btn-default:hover {
+  background: #f3f4f6;
+}
+
+.output-panel {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.output-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #389e0d;
+  margin-bottom: 10px;
+}
+
+.output-text {
+  white-space: pre-line;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #333;
+  font-family: Consolas, "Microsoft YaHei", monospace;
+}
+
+.target-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.target-summary {
+  display: flex;
+  gap: 22px;
+  padding: 12px 16px;
+  background: #f0f7ff;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.target-summary strong {
+  color: #1890ff;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px 12px;
+}
+
+.day-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.day-item .day-label {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.day-item input {
+  width: 100%;
+  height: 32px;
+  padding: 0 6px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+  font-size: 13px;
+  text-align: right;
+  box-sizing: border-box;
+}
+
+.day-item.friday {
+  background: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.day-item.weekend {
+  background: #fff7e6;
+  border-color: #ffd591;
+}
+
+.record-list {
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.record-item:hover {
+  background: #f7f8fa;
+}
+
+.record-item .record-date {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.record-item .record-amount {
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.empty {
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.modal-mask {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-mask.show {
+  display: flex;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  width: 420px;
+  max-width: 92%;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-body {
+  padding: 20px;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.modal-footer {
+  padding: 14px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+}
+
+@media (max-width: 1280px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 8px;
+  }
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .page {
+    padding: 14px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .days-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">体彩店业绩管理系统</div>
+    <div class="nav">
+      <button class="nav-btn active" data-page="daily">日报录入</button>
+      <button class="nav-btn" data-page="target">目标分解</button>
+      <button class="nav-btn" data-page="record">历史记录</button>
+    </div>
+  </div>
+
+  <!-- 日报录入页 -->
+  <div class="page active" id="page-daily">
+    <div class="date-bar">
+      <div class="form-item">
+        <label>选择日期</label>
+        <input type="date" id="reportDate" />
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">核心业绩</div>
+      <div class="form-grid">
+        <div class="form-item">
+          <label>今日目标</label>
+          <input type="text" id="dayTarget" readonly />
+        </div>
+        <div class="form-item">
+          <label>实际完成</label>
+          <input type="number" id="dayActual" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>今日达标</label>
+          <input type="text" id="dayRate" readonly />
+        </div>
+        <div class="form-item">
+          <label>11月份目标</label>
+          <input type="number" id="monthTarget" value="300000" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>截止今日合计目标</label>
+          <input type="text" id="sumTarget" readonly />
+        </div>
+        <div class="form-item">
+          <label>截止今日合计完成</label>
+          <input type="number" id="sumActual" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>截止今日达标率</label>
+          <input type="text" id="sumRate" readonly />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">客流与客单价</div>
+      <div class="form-grid">
+        <div class="form-item">
+          <label>进店人数</label>
+          <input type="number" id="customerCount" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>客单价目标</label>
+          <input type="number" id="unitPriceTarget" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>实际客单价</label>
+          <input type="text" id="unitPriceActual" readonly />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">分类业绩</div>
+      <div class="form-grid">
+        <div class="form-item">
+          <label>包装面包业绩</label>
+          <input type="number" id="breadSales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货金额</label>
+          <input type="number" id="breadReturn" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货率</label>
+          <input type="text" id="breadReturnRate" readonly />
+        </div>
+
+        <div class="form-item">
+          <label>包装蛋糕业绩</label>
+          <input type="number" id="cakeSales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货金额</label>
+          <input type="number" id="cakeReturn" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货率</label>
+          <input type="text" id="cakeReturnRate" readonly />
+        </div>
+
+        <div class="form-item">
+          <label>干点类业绩</label>
+          <input type="number" id="cookieSales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货金额</label>
+          <input type="number" id="cookieReturn" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货率</label>
+          <input type="text" id="cookieReturnRate" readonly />
+        </div>
+
+        <div class="form-item">
+          <label>西点类业绩</label>
+          <input type="number" id="pastrySales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货金额</label>
+          <input type="number" id="pastryReturn" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货率</label>
+          <input type="text" id="pastryReturnRate" readonly />
+        </div>
+
+        <div class="form-item">
+          <label>现烤类业绩</label>
+          <input type="number" id="freshSales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货金额</label>
+          <input type="number" id="freshReturn" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>退货率</label>
+          <input type="text" id="freshReturnRate" readonly />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">其他业绩</div>
+      <div class="form-grid">
+        <div class="form-item">
+          <label>现烤产值</label>
+          <input type="number" id="freshOutput" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>现烤占常规业绩占</label>
+          <input type="text" id="freshRatio" readonly />
+        </div>
+        <div class="form-item">
+          <label>饮品类业绩</label>
+          <input type="number" id="drinkSales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>外购类业绩</label>
+          <input type="number" id="outsourceSales" oninput="calcDaily()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">生日蛋糕</div>
+      <div class="form-grid">
+        <div class="form-item">
+          <label>生日蛋糕业绩</label>
+          <input type="number" id="birthdaySales" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>生日蛋糕个数</label>
+          <input type="number" id="birthdayCount" oninput="calcDaily()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">汇总与退货空间</div>
+      <div class="form-grid">
+        <div class="form-item">
+          <label>常态业绩汇总</label>
+          <input type="text" id="normalTotal" readonly />
+        </div>
+        <div class="form-item">
+          <label>今日新增可退额度</label>
+          <input type="text" id="todayReturnSpace" readonly />
+        </div>
+        <div class="form-item">
+          <label>昨日退货结余</label>
+          <input type="number" id="yesterdayReturnBalance" oninput="calcDaily()" />
+        </div>
+        <div class="form-item">
+          <label>现烤退货</label>
+          <input type="text" id="freshReturnTotal" readonly />
+        </div>
+        <div class="form-item">
+          <label>成品退货</label>
+          <input type="text" id="productReturnTotal" readonly />
+        </div>
+        <div class="form-item">
+          <label>截止目前退货空间</label>
+          <input type="text" id="currentReturnSpace" readonly />
+        </div>
+      </div>
+    </div>
+
+    <!-- 操作按钮在最底部 -->
+    <div class="btn-bar">
+      <button class="btn btn-primary" onclick="saveDailyData()">保存数据</button>
+      <button class="btn btn-danger" onclick="confirmClearDaily()">一键清除全部数据</button>
+      <button class="btn btn-success" onclick="generateText()">生成文本</button>
+    </div>
+
+    <div class="output-panel">
+      <div class="output-title">输出文本</div>
+      <div class="output-text" id="outputText"></div>
+    </div>
+  </div>
+
+  <!-- 目标分解页 -->
+  <div class="page" id="page-target">
+    <div class="card">
+      <div class="card-title">月度目标分解（31天）</div>
+
+      <div class="target-toolbar">
+        <div class="form-item" style="min-width:160px;">
+          <label>月度总目标</label>
+          <input type="number" id="totalMonthTarget" value="300000" />
+        </div>
+
+        <div class="form-item" style="min-width:180px;">
+          <label>分配方案</label>
+          <select id="allocateMethod">
+            <option value="average">平均分配</option>
+            <option value="holiday">节假日加权分配</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="allocateTarget()">执行分配</button>
+        <button class="btn btn-danger" onclick="confirmClearTarget()">数据全部清除</button>
+      </div>
+
+      <div class="target-summary">
+        <span>已分解目标：<strong id="allocatedSum">0</strong></span>
+        <span>剩余未分解：<strong id="remainTarget">0</strong></span>
+      </div>
+
+      <div class="days-grid" id="daysGrid"></div>
+    </div>
+  </div>
+
+  <!-- 历史记录页 -->
+  <div class="page" id="page-record">
+    <div class="card">
+      <div class="card-title">历史数据查询</div>
+      <p style="font-size:14px;color:#6b7280;margin-bottom:12px;">点击日期可加载对应日期数据到日报录入页。</p>
+      <div class="record-list" id="recordList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="modal-mask" id="confirmModal">
+  <div class="modal">
+    <div class="modal-header" id="modalTitle">确认操作</div>
+    <div class="modal-body" id="modalMsg">确定要执行此操作吗？</div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeModal()">取消</button>
+      <button class="btn btn-danger" id="confirmBtn">确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let pendingConfirm = null;
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Tab切换
+  document.querySelectorAll(".nav-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".nav-btn").forEach(function (b) {
+        b.classList.remove("active");
+      });
+      document.querySelectorAll(".page").forEach(function (p) {
+        p.classList.remove("active");
+      });
+      btn.classList.add("active");
+      document.getElementById("page-" + btn.dataset.page).classList.add("active");
+
+      // 切回日报页时强制刷新今日目标
+      if (btn.dataset.page === "daily") {
+        refreshDayTarget();
+        calcDaily();
+      }
+
+      if (btn.dataset.page === "record") {
+        loadRecordList();
+      }
+    });
+  });
+
+  // 默认日期
+  const today = new Date();
+  const dateStr = today.getFullYear() + "-" +
+    String(today.getMonth() + 1).padStart(2, "0") + "-" +
+    String(today.getDate()).padStart(2, "0");
+  document.getElementById("reportDate").value = dateStr;
+
+  generateDaysGrid();
+  loadTargetData();
+  loadDailyData();
+
+  // 日期改变时先刷新今日目标，再加载数据
+  document.getElementById("reportDate").addEventListener("change", function () {
+    refreshDayTarget();
+    loadDailyData();
+  });
+
+  document.getElementById("confirmBtn").addEventListener("click", function () {
+    if (pendingConfirm) {
+      pendingConfirm();
+    }
+    closeModal();
+  });
+});
+
+// 生成31天目标输入区
+function generateDaysGrid() {
+  const grid = document.getElementById("daysGrid");
+  grid.innerHTML = "";
+  const year = 2026;
+  const month = 10;
+  const weekNames = ["日", "一", "二", "三", "四", "五", "六"];
+
+  for (let day = 1; day <= 31; day++) {
+    const date = new Date(year, month, day);
+    const wd = date.getDay();
+    const item = document.createElement("div");
+    item.className = "day-item";
+
+    if (wd === 5) {
+      item.classList.add("friday");
+    }
+    if (wd === 0 || wd === 6) {
+      item.classList.add("weekend");
+    }
+
+    item.innerHTML = `
+      <div class="day-label">${day}日 周${weekNames[wd]}</div>
+      <input type="number" id="target_day_${day}" oninput="onTargetInput()" />
+    `;
+    grid.appendChild(item);
+  }
+}
+
+// 目标分解输入时同步刷新日报
+function onTargetInput() {
+  calcTargetSum();
+  refreshDayTarget();
+}
+
+// 强制刷新今日目标和截止合计目标
+function refreshDayTarget() {
+  const dateStr = document.getElementById("reportDate").value;
+  if (!dateStr) return;
+
+  const day = parseInt(dateStr.split("-")[2]);
+  let sum = 0;
+
+  for (let i = 1; i <= day; i++) {
+    const el = document.getElementById("target_day_" + i);
+    if (el) {
+      sum += parseFloat(el.value) || 0;
+    }
+  }
+
+  document.getElementById("sumTarget").value = Math.round(sum);
+
+  const todayEl = document.getElementById("target_day_" + day);
+  const todayVal = todayEl ? parseFloat(todayEl.value) || 0 : 0;
+  document.getElementById("dayTarget").value = Math.round(todayVal);
+}
+
+// 计算日报所有衍生数据
+function calcDaily() {
+  const v = function (id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+  };
+
+  const dayTarget = v("dayTarget");
+  const dayActual = v("dayActual");
+  const birthdaySales = v("birthdaySales");
+  const birthdayCount = v("birthdayCount");
+  const customerCount = v("customerCount");
+
+  // 今日达标率
+  document.getElementById("dayRate").value = dayTarget > 0
+    ? (dayActual / dayTarget * 100).toFixed(0) + "%"
+    : "0%";
+
+  // 截止达标率
+  const sumTarget = v("sumTarget");
+  const sumActual = v("sumActual");
+  document.getElementById("sumRate").value = sumTarget > 0
+    ? (sumActual / sumTarget * 100).toFixed(1) + "%"
+    : "0%";
+
+  // 各分类退货率
+  const categories = [
+    ["breadSales", "breadReturn", "breadReturnRate"],
+    ["cakeSales", "cakeReturn", "cakeReturnRate"],
+    ["cookieSales", "cookieReturn", "cookieReturnRate"],
+    ["pastrySales", "pastryReturn", "pastryReturnRate"],
+    ["freshSales", "freshReturn", "freshReturnRate"]
+  ];
+
+  categories.forEach(function ([salesId, returnId, rateId]) {
+    const sales = v(salesId);
+    const ret = v(returnId);
+    document.getElementById(rateId).value = sales > 0
+      ? (ret / sales * 100).toFixed(0) + "%"
+      : "0%";
+  });
+
+  // 常态业绩汇总
+  const normalTotal = dayActual - birthdaySales;
+  document.getElementById("normalTotal").value = Math.round(normalTotal);
+
+  // 实际客单价
+  const validCustomer = customerCount - birthdayCount;
+  const unitPrice = validCustomer > 0 ? normalTotal / validCustomer : 0;
+  document.getElementById("unitPriceActual").value = unitPrice.toFixed(2);
+
+  // 现烤占比
+  const freshSales = v("freshSales");
+  document.getElementById("freshRatio").value = normalTotal > 0
+    ? (freshSales / normalTotal * 100).toFixed(0) + "%"
+    : "0%";
+
+  // 现烤退货：直接抓取上方现烤类退货金额
+  const freshReturnVal = v("freshReturn");
+  document.getElementById("freshReturnTotal").value = freshReturnVal.toFixed(1);
+
+  // 成品退货：包装面包+包装蛋糕+干点+西点 退货之和（不含现烤）
+  const productReturn = v("breadReturn") + v("cakeReturn") + v("cookieReturn") + v("pastryReturn");
+  document.getElementById("productReturnTotal").value = productReturn.toFixed(1);
+
+  // 今日新增可退额度
+  const todaySpace = normalTotal * 0.065;
+  document.getElementById("todayReturnSpace").value = todaySpace.toFixed(2);
+
+  // 截止目前退货空间 = 昨日结余 + 今日新增可退额度 - (现烤退货 + 成品退货)
+  const yesterdayBalance = v("yesterdayReturnBalance");
+  const currentSpace = yesterdayBalance + todaySpace - (freshReturnVal + productReturn);
+  document.getElementById("currentReturnSpace").value = currentSpace.toFixed(2);
+}
+
+// 生成输出文本
+function generateText() {
+  const num = id => parseFloat(document.getElementById(id).value) || 0;
+  const txt = id => document.getElementById(id).value || "0%";
+
+  const dateStr = document.getElementById("reportDate").value;
+  const dateObj = new Date(dateStr);
+  const month = dateObj.getMonth() + 1;
+  const day = dateObj.getDate();
+
+  const text = `体彩店${month}月${day}日
+今日目标:${num("dayTarget")}
+实际完成:${num("dayActual")}
+今日达标：${txt("dayRate")}
+11月份目标：${num("monthTarget")}
+截止今日合计目标：${num("sumTarget")}
+截止今日合计完成:${num("sumActual")}
+截止今日达标率：${txt("sumRate")}
+进店人数:${num("customerCount")}
+客单价目标：${num("unitPriceTarget")}
+实际客单价:${num("unitPriceActual")}
+包装面包业绩:${num("breadSales")}
+退货金额：${num("breadReturn")}
+退货率:${txt("breadReturnRate")}
+包装蛋糕业绩:${num("cakeSales")}
+退货金额：${num("cakeReturn")}
+退货率:${txt("cakeReturnRate")}
+干点类业绩:${num("cookieSales")}
+退货金额：${num("cookieReturn")}
+退货率：${txt("cookieReturnRate")}
+西点类业绩:${num("pastrySales")}
+退货金额：${num("pastryReturn")}
+退货率：${txt("pastryReturnRate")}
+现烤类业绩:${num("freshSales")}
+退货金额:${num("freshReturn")}
+退货率:${txt("freshReturnRate")}
+现烤产值:${num("freshOutput")}
+现烤占常规业绩占:${txt("freshRatio")}
+饮品类业绩：${num("drinkSales")}
+外购类业绩：${num("outsourceSales")}
+生日蛋糕业绩:${num("birthdaySales")}
+生日蛋糕个数: ${num("birthdayCount")}
+常态业绩汇总:${num("normalTotal")}
+可退空间:${num("todayReturnSpace")}
+现烤退货: ${num("freshReturnTotal")}
+成品退货:${num("productReturnTotal")}
+昨日退货结余:${num("yesterdayReturnBalance")}
+截止目前退货空间：${num("currentReturnSpace")}`;
+
+  document.getElementById("outputText").textContent = text;
+}
+
+// 保存当日数据
+function saveDailyData() {
+  const dateStr = document.getElementById("reportDate").value;
+  if (!dateStr) {
+    alert("请选择日期");
+    return;
+  }
+
+  const fields = [
+    "dayActual", "monthTarget", "sumActual", "customerCount",
+    "unitPriceTarget", "breadSales", "breadReturn", "cakeSales", "cakeReturn",
+    "cookieSales", "cookieReturn", "pastrySales", "pastryReturn", "freshSales",
+    "freshReturn", "freshOutput", "drinkSales", "outsourceSales",
+    "birthdaySales", "birthdayCount", "yesterdayReturnBalance"
+  ];
+
+  const data = {};
+  fields.forEach(function (f) {
+    data[f] = document.getElementById(f).value;
+  });
+
+  const allData = JSON.parse(localStorage.getItem("dailyRecords") || "{}");
+  allData[dateStr] = data;
+  localStorage.setItem("dailyRecords", JSON.stringify(allData));
+  alert("保存成功");
+}
+
+// 加载当日数据
+function loadDailyData() {
+  const dateStr = document.getElementById("reportDate").value;
+  if (!dateStr) return;
+
+  const allData = JSON.parse(localStorage.getItem("dailyRecords") || "{}");
+  const data = allData[dateStr];
+
+  if (data) {
+    Object.keys(data).forEach(function (key) {
+      const el = document.getElementById(key);
+      if (el) {
+        el.value = data[key];
+      }
+    });
+  } else {
+    const inputs = document.querySelectorAll("#page-daily input[type='number']");
+    inputs.forEach(function (i) {
+      if (i.id !== "monthTarget") {
+        i.value = "";
+      }
+    });
+  }
+
+  calcDaily();
+}
+
+// 确认清除当日全部数据
+function confirmClearDaily() {
+  showModal(
+    "一键清除全部数据",
+    "确定要清除当前日期的全部录入数据吗？此操作不可恢复。",
+    function () {
+      const inputs = document.querySelectorAll("#page-daily input[type='number']");
+      inputs.forEach(function (i) {
+        if (i.id !== "monthTarget") {
+          i.value = "";
+        }
+      });
+      calcDaily();
+    }
+  );
+}
+
+// 计算目标分解汇总
+function calcTargetSum() {
+  let sum = 0;
+
+  for (let i = 1; i <= 31; i++) {
+    sum += parseFloat(document.getElementById("target_day_" + i).value) || 0;
+  }
+
+  const total = parseFloat(document.getElementById("totalMonthTarget").value) || 0;
+  document.getElementById("allocatedSum").textContent = Math.round(sum);
+  document.getElementById("remainTarget").textContent = Math.round(total - sum);
+
+  saveTargetData();
+}
+
+// 执行目标分配
+function allocateTarget() {
+  const total = parseFloat(document.getElementById("totalMonthTarget").value) || 0;
+  const method = document.getElementById("allocateMethod").value;
+
+  if (method === "average") {
+    const avg = total / 31;
+    for (let i = 1; i <= 31; i++) {
+      document.getElementById("target_day_" + i).value = Math.round(avg);
+    }
+  } else if (method === "holiday") {
+    const weights = [];
+    const year = 2026;
+    const month = 10;
+    let totalWeight = 0;
+
+    for (let day = 1; day <= 31; day++) {
+      const wd = new Date(year, month, day).getDay();
+      let w = 1;
+
+      if (wd === 0 || wd === 6) {
+        w = 1.2;
+      } else if (wd === 5) {
+        w = 1.1;
+      }
+
+      weights.push(w);
+      totalWeight += w;
+    }
+
+    const base = total / totalWeight;
+    for (let i = 0; i < 31; i++) {
+      document.getElementById("target_day_" + (i + 1)).value = Math.round(base * weights[i]);
+    }
+  }
+
+  calcTargetSum();
+  refreshDayTarget();
+}
+
+// 确认清除目标分解
+function confirmClearTarget() {
+  showModal(
+    "清除确认",
+    "确定要清除当前全部目标分解数据吗？",
+    function () {
+      for (let i = 1; i <= 31; i++) {
+        document.getElementById("target_day_" + i).value = "";
+      }
+      calcTargetSum();
+      refreshDayTarget();
+    }
+  );
+}
+
+// 保存目标分解数据
+function saveTargetData() {
+  const data = {};
+
+  for (let i = 1; i <= 31; i++) {
+    data["day_" + i] = document.getElementById("target_day_" + i).value;
+  }
+
+  data.totalMonthTarget = document.getElementById("totalMonthTarget").value;
+  localStorage.setItem("targetBreakdown", JSON.stringify(data));
+}
+
+// 加载目标分解数据
+function loadTargetData() {
+  const data = JSON.parse(localStorage.getItem("targetBreakdown") || "{}");
+
+  if (data.totalMonthTarget) {
+    document.getElementById("totalMonthTarget").value = data.totalMonthTarget;
+  }
+
+  for (let i = 1; i <= 31; i++) {
+    if (data["day_" + i]) {
+      document.getElementById("target_day_" + i).value = data["day_" + i];
+    }
+  }
+
+  calcTargetSum();
+  refreshDayTarget();
+}
+
+// 加载历史记录列表
+function loadRecordList() {
+  const list = document.getElementById("recordList");
+  const allData = JSON.parse(localStorage.getItem("dailyRecords") || "{}");
+  const dates = Object.keys(allData).sort().reverse();
+
+  if (dates.length === 0) {
+    list.innerHTML = "<div class='empty'>暂无历史记录</div>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  dates.forEach(function (date) {
+    const data = allData[date];
+    const item = document.createElement("div");
+    item.className = "record-item";
+
+    item.onclick = function () {
+      document.getElementById("reportDate").value = date;
+      refreshDayTarget();
+      loadDailyData();
+      document.querySelectorAll(".nav-btn")[0].click();
+    };
+
+    item.innerHTML = `
+      <span class="record-date">${date}</span>
+      <span class="record-amount">实际完成：${data.dayActual || "-"}</span>
+    `;
+
+    list.appendChild(item);
+  });
+}
+
+// 通用确认弹窗
+function showModal(title, msg, callback) {
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalMsg").textContent = msg;
+  pendingConfirm = callback;
+  document.getElementById("confirmModal").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("confirmModal").classList.remove("show");
+  pendingConfirm = null;
+}
+</script>
+</body>
+</html>
